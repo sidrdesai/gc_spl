@@ -25,9 +25,9 @@ def rcgcrd_msg_to_data(msg: RCGCRD4) -> bytes:
         playerNum=msg.player_num,
         teamNum=msg.team_num,
         fallen=msg.fallen,
-        pose=msg.pose,
+        pose=list(msg.pose),
         ballAge=msg.ball_age,
-        ball=msg.ball
+        ball=list(msg.ball)
     )
     data = RoboCupGameControlReturnData.build(container)
     return data

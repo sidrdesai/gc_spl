@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import socket
+import select
 from threading import Thread
 
 import rclpy
@@ -73,7 +74,7 @@ class GCSPL(Node):
         self._client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self._client.bind(('', self.GAMECONTROLLER_DATA_PORT))
         # Set timeout so _loop can constantly check for rclpy.ok()
-        self._client.settimeout(0.1)
+        self._client.setblocking(0)
 
         # Start thread to continuously poll
         self._loop_thread = Thread(target=self._loop)
@@ -111,7 +112,8 @@ class GCSPL(Node):
 
     def _loop(self):
         while rclpy.ok():
-            try:
+            ready = select.select([self._client], [], [], 0.1)[0]
+            if ready:
                 data, (self._host, _) = self._client.recvfrom(1024)
                 self.get_logger().debug('received: "%s"' % data)
 
@@ -120,8 +122,6 @@ class GCSPL(Node):
 
                 # Publish it
                 self._publisher.publish(msg)
-            except TimeoutError:
-                pass
 
     def _rcgcrd_callback(self, msg):
 
