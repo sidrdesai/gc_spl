@@ -35,8 +35,8 @@ class GCSPL(Node):
 
         # Declare parameters
         self.declare_parameter('return_port', 3939)
-        self.declare_parameter('rcgcd_version', Parameter.Type.INTEGER)
-        self.declare_parameter('rcgcrd_version', Parameter.Type.INTEGER)
+        self.declare_parameter('rcgcd_version', 15)
+        self.declare_parameter('rcgcrd_version', 4)
 
         # Read and log parameters
         return_port = self.get_parameter('return_port').value
